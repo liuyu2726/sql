@@ -1,0 +1,96 @@
+参考数据《MySQL必知必会》
+数据库是一个以某种有组织的方式存储的数据集合。
+数据库DB是通过数据库管理系统DBMS来创建和管理的。
+表table是一种结构化的文件，可以用来存储某种特定类型的数据。
+模式schema是关于数据库和表的布局及特性的信息。
+列column是表中的一个字段。
+正确地将数据分解为多个列极为重要。
+数据类型datatype定义列可以存储的数据种类。
+表中的数据是按行row存储的。
+主键primary key 一列或一组列，其值能够唯一区分表中每一行。
+主键列不允许null值
+SQL是一种专门用来和数据库通信的语言。
+数据的所有存储，检索，管理和处理实际上都是由DBMS完成的，MySQL是一种DBMS，即它是一种数据库软件。
+MySQL，Oracle，SQL server等数据库都是基于C/S架构的数据库。
+熟悉mysql命令行实用程序
+MySQL客户端工具：SQLyog   navicat   DBeaver
+为了连接到MySQL，需要提供主机名，端口号，合法的用户名和密码
+mysql  -uroot  -p 
+show databases;
+use bzbh;
+show tables;
+show column from customers;
+自动增量
+show create database bzbh;
+show create table customers;
+show grants;
+show errors;
+show warnings;
+help show;
+检索单列
+select prod_name from products;
+SQL语句不区分大小写，但建议关键字大写，其他小写
+检索多列
+select prod_id,prod_name,prod_price from products;
+检索所有列  *
+select * from products;
+检索不同的行 distinct
+select distinct vend_id from vendors;
+distinct应用于所有列而不仅是前置它的列
+限制结果  limit
+select prod_name from products limit 3;
+指定要检索的开始行和行数，第一个数为开始位置，第二个数为要检索的行数，检索出来的第一行为行0而不是行1，
+select prod_name from products limit 2,5;
+使用完全限定的表名（指定列所属的表）
+select products.prod_name from bzbh.products limit 5;
+排序检索数据  order  by  
+order by子句取一个或多个列的名字，据此对输出结果集进行排序
+select prod_name,prod_price from products order by prod_price,prod_name;
+需要理解指定多列排序时，仅在多行具有相同的prod_price值时才对产品按prod_name进行排序，如果prod_price列中的所有值都是唯一的，就不会按prod_name排序了
+排序方向模式是升序asc,降序要指定使用desc,如果想在多个列上进行降序排序，必须对每个列指定desc关键字
+使用order by和limit组合，能够找出一个列的最高或最低的值
+select prod_name,prod_price from products order by prod_price desc limit 1;
+过滤数据 where子句
+select prod_name,prod_price from products where prod_price = 2.50;
+where子句操作符：=  <>  !=  >   <    >=   <=     between...and...    not  in  like  %  _    and  or
+select prod_name,prod_price from products where prod_price between 5 and 10;
+空值检查  is null
+select cust_id from customers where cust_email is null;
+select prod_id,prod_name,prod_price from products where vend_id = 1003 and prod_price <= 10;
+and操作符优先级高于or,复杂的查询条件可以使用括号来明确分组
+select prod_id,prod_name,prod_price from products where vend_id in (1002,1003)  order by prod_name;
+select prod_id,prod_name,prod_price from products where vend_id not in (1002,1003)  order by prod_name;
+select prod_id,prod_name from products where prod_name like 'jet%';
+select prod_id,prod_name from products where prod_name like '_ ton anvil';
+不要过度使用通配符
+用正则表达式进行搜索
+正则表达式的作用是匹配文本，将一个模式（正则表达式）与一个文本串进行比较
+MySQL仅支持多数正则表达式实现的一个很小的子集
+下面查询prod_name中包含文本1000的所有行
+select prod_name from products where prod_name regexp '1000' order by prod_name;
+select prod_name from products where prod_name regexp '.000' order by prod_name;
+句点 . 在正则表达式中表示匹配任意一个字符
+like匹配整个列，而regexp在列值内进行匹配
+MySQL的正则表达式匹配不区分大小写，如果需要区分，可以使用关键字binary
+select prod_name from products where prod_name regexp binary  'JetPack .000' order by prod_name;
+正则表达式条件或 |
+select prod_name from products where prod_name regexp  '1000|2000' order by prod_name;
+匹配几个字符之一  [ ]
+select prod_name from products where prod_name regexp  '[123] Ton' order by prod_name;
+事实上，正则表达式[123]Ton 和 [1|2|3]Ton一样
+[^123] 取反
+[0-9] 范围
+如果要匹配特殊字符本身，需要使用\\为前导，例如 \\-  \\.  \\\
+匹配字符类，可以使用预定义字符集
+[:alnum:] 匹配字母和数字  等价于 [a-zA-Z0-9]
+[:alpha:] 匹配字符  等价于[a-zA-Z]
+[:digit:] 匹配任意数字  等价于[0-9]
+[:lower:]    
+[:upper:]
+重复元字符：*  +  ?   {n}   {n,}  {n,m}
+select prod_name  from  products  where prod_name  regexp '\\([0-9] sticks?\\)' order by prod_name;
+
+
+
+
+
